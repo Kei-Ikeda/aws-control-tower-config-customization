@@ -98,6 +98,10 @@ def lambda_handler(event, context):
             CONFIG_RECORDER_DAILY_GLOBAL_RESOURCE_STRING = os.getenv('CONFIG_RECORDER_OVERRIDE_DAILY_GLOBAL_RESOURCE_LIST', '')
             CONFIG_RECORDER_DAILY_GLOBAL_RESOURCE_LIST = CONFIG_RECORDER_DAILY_GLOBAL_RESOURCE_STRING.split(
                 ',') if CONFIG_RECORDER_DAILY_GLOBAL_RESOURCE_STRING != '' else []
+
+            GLOBAL_RESOURCE_TYPES_STRING = os.getenv('GLOBAL_RESOURCE_TYPES', '')
+            GLOBAL_RESOURCE_TYPES_LIST = GLOBAL_RESOURCE_TYPES_STRING.split(
+                ',') if GLOBAL_RESOURCE_TYPES_STRING != '' else []
             
             # Get resource lists for both strategies
             CONFIG_RECORDER_STRATEGY = os.getenv('CONFIG_RECORDER_STRATEGY', 'EXCLUSION')
@@ -129,9 +133,8 @@ def lambda_handler(event, context):
                 CONFIG_RECORDER_OVERRIDE_DAILY_RESOURCE_LIST += CONFIG_RECORDER_DAILY_GLOBAL_RESOURCE_LIST
             else:
                 # For non-home regions, add global resources to the exclusion list to prevent them from being recorded.
-                # This only applies if the strategy is EXCLUSION.
                 if CONFIG_RECORDER_STRATEGY == 'EXCLUSION':
-                    CONFIG_RECORDER_EXCLUSION_RESOURCE_LIST.extend(CONFIG_RECORDER_DAILY_GLOBAL_RESOURCE_LIST)
+                    CONFIG_RECORDER_EXCLUSION_RESOURCE_LIST.extend(GLOBAL_RESOURCE_TYPES_LIST)
                     CONFIG_RECORDER_EXCLUSION_RESOURCE_LIST = list(set(CONFIG_RECORDER_EXCLUSION_RESOURCE_LIST))
 
             if event == 'Delete':
